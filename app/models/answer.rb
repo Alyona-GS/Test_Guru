@@ -10,6 +10,10 @@ class Answer < ApplicationRecord
   private
 
   def validate_quantity
-    errors.add(:question_id) unless (1..4).include?(Answer.where(question_id: question_id).count)
+    errors.add(:question_id) if too_much?
+  end
+
+  def too_much?
+    Answer.where(question_id: question_id).count > 3
   end
 end
