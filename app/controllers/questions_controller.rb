@@ -1,11 +1,13 @@
 class QuestionsController < ApplicationController
 
-  before_action :find_test
-  before_action :test_questions
+  before_action :find_test, except: %i[show]
+  before_action :find_question, except: %i[index new create]
 
-  rescue_from StandardError, with: :rescue_with_question_not_found
+  #rescue_from StandardError, with: :rescue_with_question_not_found
 
   def index
+    @questions = @test.questions
+
     respond_to do |format|
       format.text {render plain: "All questions" }
       format.html {render inline: "<%= @questions.inspect %>" }
@@ -13,7 +15,6 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @question = @questions[params[:id].to_i - 1]
     render inline: '<%= @question.body %>'
   end
 
@@ -22,11 +23,16 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    @question = @questions.create(question_params)
+    @question = @test.questions.new(question_params)
+
+    if @question.save
+      render plain: @question.inspect
+    else
+      render :new
+    end
   end
 
   def destroy
-    @question = @questions[params[:id].to_i - 1]
     @question.destroy
   end
 
@@ -36,8 +42,8 @@ class QuestionsController < ApplicationController
     @test = Test.find(params[:test_id])
   end
 
-  def test_questions
-    @questions = @test.questions
+  def find_question
+    @question = Question.find(params[:id])
   end
 
   def question_params
