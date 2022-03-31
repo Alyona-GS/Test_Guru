@@ -20,7 +20,7 @@ module TestGuru
     # config.eager_load_paths << Rails.root.join("extras")
     config.time_zone = 'Samara'
 
-    config.i18n.default_locale = :en
+    config.i18n.default_locale = :ru
     config.i18n.available_locales = :ru, :en
   end
 end

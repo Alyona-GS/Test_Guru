@@ -1,34 +1,46 @@
 class QuestionsController < ApplicationController
 
-  before_action :find_test, except: %i[show]
   before_action :find_question, except: %i[index new create]
+  before_action :find_test, except: %i[show edit update]
 
-  #rescue_from StandardError, with: :rescue_with_question_not_found
+  rescue_from ActiveRecord::RecordNotFound, with: :rescue_with_question_not_found
 
   def index
     @questions = @test.questions
 
     respond_to do |format|
-      format.text {render plain: "All questions" }
-      format.html {render inline: "<%= @questions.inspect %>" }
+      format.text { render plain: "All questions" }
+      format.html { render :index }
     end
   end
 
   def show
-    render inline: '<%= @question.body %>'
+
   end
 
   def new
+    @question = Question.new
+  end
 
+  def edit
+  
   end
 
   def create
     @question = @test.questions.new(question_params)
 
     if @question.save
-      render plain: @question.inspect
+      redirect_to @question
     else
       render :new
+    end
+  end
+
+  def update
+    if @question.update(question_params)
+      redirect_to @question
+    else
+      render :edit
     end
   end
 
