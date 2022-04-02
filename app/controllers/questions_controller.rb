@@ -14,17 +14,13 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def show
-
-  end
+  def show; end
 
   def new
     @question = Question.new
   end
 
-  def edit
-  
-  end
+  def edit; end
 
   def create
     @question = @test.questions.new(question_params)
@@ -45,8 +41,9 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
+    logger.debug "Debug #{@question.inspect}"
     @question.destroy
-    redirect_to test_questions_path
+    #redirect_to test_questions_path
   end
 
   private
